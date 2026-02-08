@@ -50,13 +50,13 @@ jobs:
         shell: bash
         run: |
           cargo build --release --target ${{ matrix.target }}
-          mkdir -p pomodoro-plugin
-          cp target/${{ matrix.target }}/release/${{ matrix.library-name }} pomodoro-plugin/${{ matrix.artifact-name }}
+          mkdir -p release
+          cp target/${{ matrix.target }}/release/${{ matrix.library-name }} release/${{ matrix.artifact-name }}
 
       - name: Copy plugin manifest
         shell: bash
         run: |
-          cp plugin.toml pomodoro-plugin/plugin.toml
+          cp plugin.toml release/plugin.toml
 
       - name: Build frontend
         shell: bash
@@ -65,14 +65,14 @@ jobs:
           npm ci
           npm run build
           cd ..
-          mkdir -p pomodoro-plugin/frontend
-          cp frontend/dist/index.js pomodoro-plugin/frontend/index.js
+          mkdir -p release/frontend
+          cp frontend/dist/index.js release/frontend/index.js
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: pomodoro-plugin-${{ matrix.target }}
-          path: pomodoro-plugin
+          path: release
 
   release:
     name: Create Release
@@ -93,11 +93,11 @@ jobs:
       - name: Create release archive
         shell: bash
         run: |
-          mkdir -p pomodoro-plugin
+          mkdir -p release
           # Copy plugin manifest (from any artifact)
           for dir in artifacts/*/; do
             if [ -f "$dir/plugin.toml" ]; then
-              cp "$dir/plugin.toml" pomodoro-plugin/
+              cp "$dir/plugin.toml" release/
               break
             fi
           done
@@ -105,26 +105,28 @@ jobs:
           for dir in artifacts/*/; do
             # Windows DLL
             if [ -f "$dir/pomodoro-plugin-windows-x86_64.dll" ]; then
-              cp "$dir/pomodoro-plugin-windows-x86_64.dll" pomodoro-plugin/
+              cp "$dir/pomodoro-plugin-windows-x86_64.dll" release/
             fi
             # Linux SO
             if [ -f "$dir/pomodoro-plugin-linux-x86_64.so" ]; then
-              cp "$dir/pomodoro-plugin-linux-x86_64.so" pomodoro-plugin/
+              cp "$dir/pomodoro-plugin-linux-x86_64.so" release/
             fi
             # macOS dylib
             if [ -f "$dir/pomodoro-plugin-macos-x86_64.dylib" ]; then
-              cp "$dir/pomodoro-plugin-macos-x86_64.dylib" pomodoro-plugin/
+              cp "$dir/pomodoro-plugin-macos-x86_64.dylib" release/
             fi
           done
           # Copy frontend (from any artifact directory)
           for dir in artifacts/*/; do
             if [ -d "$dir/frontend" ]; then
-              cp -r "$dir/frontend" pomodoro-plugin/
+              cp -r "$dir/frontend" release/
               break
             fi
           done
           # Create zip archive
-          zip -r pomodoro-plugin-${{ github.ref_name }}.zip pomodoro-plugin/
+          cd release
+          zip -r ../pomodoro-plugin-${{ github.ref_name }}.zip .
+          cd ..
 
       - name: Create Release
         uses: softprops/action-gh-release@v1

@@ -1,14 +1,12 @@
 [plugin]
-id = "pomodoro-plugin"
-name = "Pomodoro"
+name = "pomodoro-plugin"
+display_name = "Pomodoro"
 version = "1.0.0"
 description = "Pomodoro timer and focus sessions"
 author = "TimeTracker"
 
 [backend]
-crate_name = "time_tracker_pomodoro_plugin"
 library_name = "pomodoro_plugin"
-entry_point = "_plugin_create"
 
 [frontend]
 entry = "index.js"
