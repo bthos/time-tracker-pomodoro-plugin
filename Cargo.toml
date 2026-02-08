@@ -3,7 +3,7 @@ name = "time-tracker-pomodoro-plugin"
 version = "0.1.0"
 authors = []
 license = "MIT"
-repository = "https://github.com/bthos/time-tracker-pomodoro-plugin"
+repository = "https://github.com/bthos/time-tracker-plugin-pomodoro"
 edition = "2021"
 description = "Pomodoro plugin for Time Tracker"
 

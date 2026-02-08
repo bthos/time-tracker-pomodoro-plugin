@@ -42,4 +42,4 @@ MIT
 
 ## Repository
 
-https://github.com/bthos/time-tracker-pomodoro-plugin
+https://github.com/bthos/time-tracker-plugin-pomodoro
